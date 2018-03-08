@@ -1,0 +1,25 @@
+memw[N]
+memr[N]
+PSIZE
+
+write:
+while(true) {
+    P(S1);
+    int w = n; // Process ID - MEMORY ID
+    i = (i + 1) % N;
+    V(S1);
+    P(memw[w]);
+    WRITE;
+    V(memr[w])
+}
+
+read:
+while(true) {
+    P(S2);
+    int r = n;
+    j = (j + 1) % N;
+    V(S2);
+    P(memr[r]);
+    READ;
+    V(memw[r]);
+}

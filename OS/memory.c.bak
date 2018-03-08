@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct freememory{
+  struct freememory *front;
+  struct freememory *back;
+  int space;
+}memory[10];
+
+int r = rand() % 10;
+struct freememory *start = memory;
+
+void sort();
+
+void init() {
+  memory[0].front = NULL;
+  memory[0].back = &memory[1];
+  memory[0].space = rand() % 1024;
+  for (int i = 1; i < r - 1; i++) {
+    memory[i].front = &memory[i-1];
+    memory[i].back = &memory[i+1];
+    memory[i].space = rand() % 1024;
+  }
+  memory[r-1].front = &memory[r-2];
+  memory[r-1].back = NULL;
+  memory[r-1].space = rand() % 1024;
+  sort();
+}
+
+void ff(int need) {
+
+}
+
+void bf(int need) {
+  for (int i = 0; i < r; i++) {
+    if (memory[i].space > need) {
+      memory[i].space -= need;
+      break;
+    } else if (memory[i].space == need) {
+      if (i == 0) {
+        *(memory[0].back).front = NULL;
+        start = memory[0].back;
+      } else {
+        *(memory[i].back).front = memory[i].front;
+        *(memory[i].front).back = memory[i].back;
+      }
+      break;
+    }
+  }
+}
+
+void wf(int need) {
+  if (memory[])
+}
+
+void printStatus() {
+  printf("---------------------\n");
+  printf("| Number | Size(KB) |\n");
+  for (int i = 0; i < r; i++) {
+    printf("|    %d   |   %4d   |\n", i, memory[i].space);
+  }
+}
+
+int main() {
+  init();
+  int algorithm = 0;
+  int need = 0;
+  printStatus();
+  printf("Please input the space(kB) needed:");
+  scanf("%d", need);
+  printf("Please choose the algorithm:\n");
+  printf("  [0]First Fit\n");
+  printf("  [1]Best Fit\n");
+  printf("  [2]Worst Fit\n");
+  printf("Input the number:");
+  scanf("%d", algorithm);
+  switch (algorithm) {
+    case 0:
+      ff(need);
+      break;
+    case 1:
+      bf(need);
+      break;
+    case 2:
+      wf(need);
+      break;
+    default:
+      ff(need);
+  }
+  printStatus();
+  return 0;
+}
