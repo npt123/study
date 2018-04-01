@@ -34,13 +34,31 @@ void matrixInit() {
     }
 }
 
-// 计算矩阵对应单元的结果
-double calculateUnit(double line[], int col) {
+// 计算矩阵对应行的结果
+double calculateRow(double line[], int col) {
     double result = 0.0;
     for (int i = 0; i < first_col; ++i) {
         result += line[i] * secondMatrix[i][col];
     }
     return result;
+}
+
+// 计算矩阵对应单元的结果
+double calculateUnit(int row, int col) {
+    double result = 0.0;
+    for (int i = 0; i < first_col; ++i) {
+        result += firstMatrix[row][i] * secondMatrix[i][col];
+    }
+    return result;
+}
+
+//　串行计算矩阵乘积
+void matrixMulti() {
+    for (int i = 0; i < first_row; ++i) {
+        for (int j = 0; j < second_col; ++j) {
+            resultMatrix[i][j] = calculateUnit(i, j);
+        }
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -52,11 +70,19 @@ int main(int argc, char *argv[]) {
     MPI_Status send_status[first_row];
     MPI_Status recv_status[first_row];
     MPI_Request send[first_row];
-    MPI_Request recv[first_row];
 
     if (rank == 0) {
+        //　生成矩阵
         matrixInit();
+
+        // 串行计算
         double t1 = MPI_Wtime();
+        matrixMulti();
+        double t2 = MPI_Wtime();
+        cout << "Serial Time: " << t2-t1 << endl;
+
+        // 并行计算
+        double t3 = MPI_Wtime();
         for (int i = 0; i < slaver_num; ++i) {
             MPI_Send(&secondMatrix[0], second_row*second_col, MPI_DOUBLE, i+1, 0, MPI_COMM_WORLD);
 //            cout << "Send secondMatrix to " << i+1 << endl;
@@ -69,8 +95,8 @@ int main(int argc, char *argv[]) {
             MPI_Recv(&resultMatrix[i], second_col, MPI_DOUBLE, i%slaver_num+1, i+1025, MPI_COMM_WORLD, &recv_status[i]);
         }
 //        MPI_Waitall(first_row, recv, recv_status);
-        double t2 = MPI_Wtime();
-        cout << "Time: " << t2-t1 << endl;
+        double t4 = MPI_Wtime();
+        cout << "Parallel Time: " << t4-t3 << endl;
     } else {
         MPI_Recv(&secondMatrix[0], second_row*second_col, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &status);
 //        cout << rank << " receive from master: secondMatrix" << endl;
@@ -80,7 +106,7 @@ int main(int argc, char *argv[]) {
             MPI_Recv(&line, first_col, MPI_DOUBLE, 0, i*slaver_num+rank, MPI_COMM_WORLD, &recv_status[i]);
 //            cout << rank << " receive from master: firstMatrix[" << i*slaver_num+rank << "]" << endl;
             for (int j = 0; j < second_row; ++j) {
-                result[j] = calculateUnit(line, j);
+                result[j] = calculateRow(line, j);
             }
             MPI_Isend(&result, second_col, MPI_DOUBLE, 0, i*slaver_num+rank+1024, MPI_COMM_WORLD, &send[i]);
 //            for (int k = 0; k < second_row; ++k) {
