@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS D;
 CREATE TABLE D (
-	yxh CHAR(2) NOT NULL,
-	mc VARCHAR(50) NOT NULL,
-    dz VARCHAR(50) NOT NULL,
-    lxdh CHAR(8) NOT NULL,
-    PRIMARY KEY(yxh)
+	     yxh CHAR(2) NOT NULL,
+	     mc VARCHAR(50) NOT NULL,
+       dz VARCHAR(50) NOT NULL,
+       lxdh CHAR(8) NOT NULL,
+       PRIMARY KEY(yxh)
 ) ENGINE = INNODB;
 
 INSERT INTO D(yxh, mc, dz, lxdh) VALUES
@@ -14,15 +14,15 @@ INSERT INTO D(yxh, mc, dz, lxdh) VALUES
 
 DROP TABLE IF EXISTS S;
 CREATE TABLE S (
-    xh CHAR(4) NOT NULL,
-    xm VARCHAR(50) NOT NULL,
-    xb ENUM('男', '女') DEFAULT '女' NOT NULL,
-    csrq DATE NOT NULL,
-    jg VARCHAR(10) NOT NULL,
-    sjhm CHAR(11) NOT NULL,
-    yxh CHAR(2),
-    PRIMARY KEY(xh),
-    FOREIGN KEY(yxh) REFERENCES D(yxh) ON DELETE NO ACTION
+       xh CHAR(4) NOT NULL,
+       xm VARCHAR(50) NOT NULL,
+       xb ENUM('男', '女') DEFAULT '女' NOT NULL,
+       csrq DATE NOT NULL,
+       jg VARCHAR(10) NOT NULL,
+       sjhm CHAR(11) NOT NULL,
+       yxh CHAR(2),
+       PRIMARY KEY(xh),
+       FOREIGN KEY(yxh) REFERENCES D(yxh) ON DELETE NO ACTION
 ) ENGINE = INNODB AUTO_INCREMENT = 1101;
 
 INSERT INTO S(xm, xb, csrq, jg, sjhm, yxh) VALUES
@@ -36,15 +36,15 @@ INSERT INTO S(xm, xb, csrq, jg, sjhm, yxh) VALUES
 
 DROP TABLE IF EXISTS T;
 CREATE TABLE T (
-	gh CHAR(4) NOT NULL,
-    xm VARCHAR(50) NOT NULL,
-    xb ENUM('男', '女') DEFAULT '女' NOT NULL,
-    csrq DATE NOT NULL,
-    xl ENUM('教授', '副教授', '讲师') DEFAULT '讲师' NOT NULL,
-    jbgz FLOAT(7,2) NOT NULL,
-    yxh CHAR(2) NOT NULL,
-    PRIMARY KEY(gh),
-    FOREIGN KEY(yxh) REFERENCES D(yxh) ON DELETE NO ACTION
+       gh CHAR(4) NOT NULL,
+       xm VARCHAR(50) NOT NULL,
+       xb ENUM('男', '女') DEFAULT '女' NOT NULL,
+       csrq DATE NOT NULL,
+       xl ENUM('教授', '副教授', '讲师') DEFAULT '讲师' NOT NULL,
+       jbgz FLOAT(7,2) NOT NULL,
+       yxh CHAR(2) NOT NULL,
+       PRIMARY KEY(gh),
+       FOREIGN KEY(yxh) REFERENCES D(yxh) ON DELETE NO ACTION
 ) ENGINE = INNODB;
 
 INSERT INTO T(gh, xm, xb, csrq, xl, jbgz, yxh) VALUES
@@ -55,13 +55,13 @@ INSERT INTO T(gh, xm, xb, csrq, xl, jbgz, yxh) VALUES
 
 DROP TABLE IF EXISTS C;
 CREATE TABLE C (
-	kh CHAR(8) NOT NULL,
-    km VARCHAR(20) NOT NULL,
-    xf TINYINT(1) UNSIGNED NOT NULL,
-    xs TINYINT(2) UNSIGNED NOT NULL,
-    yxh CHAR(2) NOT NULL,
-    PRIMARY KEY(kh),
-    FOREIGN KEY(yxh) REFERENCES D(yxh) ON DELETE NO ACTION
+	     kh CHAR(8) NOT NULL,
+       km VARCHAR(20) NOT NULL,
+       xf TINYINT(1) UNSIGNED NOT NULL,
+       xs TINYINT(2) UNSIGNED NOT NULL,
+       yxh CHAR(2) NOT NULL,
+       PRIMARY KEY(kh),
+       FOREIGN KEY(yxh) REFERENCES D(yxh) ON DELETE NO ACTION
 ) ENGINE = INNODB;
 
 INSERT INTO C(kh, km, xf, xs, yxh) VALUES
@@ -74,13 +74,13 @@ INSERT INTO C(kh, km, xf, xs, yxh) VALUES
 
 DROP TABLE IF EXISTS O;
 CREATE TABLE O (
-	xq CHAR(12) NOT NULL,
-    kh CHAR(8) NOT NULL,
-    gh CHAR(4) NOT NULL,
-    sksj VARCHAR(20) NOT NULL,
-    PRIMARY KEY(xq, kh, gh),
-    FOREIGN KEY(kh) REFERENCES C(kh) ON DELETE CASCADE,
-    FOREIGN KEY(gh) REFERENCES T(gh) ON DELETE CASCADE
+	     xq CHAR(12) NOT NULL,
+       kh CHAR(8) NOT NULL,
+       gh CHAR(4) NOT NULL,
+       sksj VARCHAR(20) NOT NULL,
+       PRIMARY KEY(xq, kh, gh),
+       FOREIGN KEY(kh) REFERENCES C(kh) ON DELETE CASCADE,
+       FOREIGN KEY(gh) REFERENCES T(gh) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 INSERT INTO O(xq, kh, gh, sksj) VALUES
@@ -95,16 +95,16 @@ INSERT INTO O(xq, kh, gh, sksj) VALUES
 
 DROP TABLE IF EXISTS E;
 CREATE TABLE E (
-	xh CHAR(4) NOT NULL,
-    xq CHAR(12) NOT NULL,
-    kh CHAR(8) NOT NULL,
-    gh CHAR(4) NOT NULL,
-    pscj TINYINT UNSIGNED,
-    kscj TINYINT UNSIGNED,
-    zpcj TINYINT UNSIGNED,
-    PRIMARY KEY(xh, xq, kh, gh),
-    FOREIGN KEY(xh) REFERENCES S(xh) ON DELETE CASCADE,
-    FOREIGN KEY(xq, kh, gh) REFERENCES O(xq, kh, gh) ON DELETE CASCADE
+	     xh CHAR(4) NOT NULL,
+       xq CHAR(12) NOT NULL,
+       kh CHAR(8) NOT NULL,
+       gh CHAR(4) NOT NULL,
+       pscj TINYINT UNSIGNED,
+       kscj TINYINT UNSIGNED,
+       zpcj TINYINT UNSIGNED,
+       PRIMARY KEY(xh, xq, kh, gh),
+       FOREIGN KEY(xh) REFERENCES S(xh) ON DELETE CASCADE,
+       FOREIGN KEY(xq, kh, gh) REFERENCES O(xq, kh, gh) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 INSERT INTO E(xh, xq, kh, gh, pscj, kscj, zpcj) VALUES

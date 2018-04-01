@@ -1,3 +1,4 @@
+import os
 from user import *
 
 
@@ -21,6 +22,7 @@ def main():
             continue
         else:
             user = User(username)
+            path = '/'
             if not user.login():
                 break
             else:
@@ -33,11 +35,16 @@ def main():
                 print('7) write: 写文件')
                 print('8) exit: 退出')
                 while True:
-                    command = input('~' + username + ' ')
+                    command = input(path + username + ' ')
                     operate = command.split()[0]
                     if operate == 'exit':
                         user.logout()
                         break
+                    elif operate == 'cd':
+                        if os.path.exists('./root' + command.split()[1]):
+                            path = command.split()[1]
+                        else:
+                            print('Path Error!')
                     elif operate == 'touch':
                         pass
                     elif operate == 'mkdir':
