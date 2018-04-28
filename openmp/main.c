@@ -3,8 +3,8 @@
 #include <omp.h>
 #include <time.h>
 
-#define min -1024.1024
-#define max 1024.1024
+#define min -65536.65536
+#define max 65536.65536
 #define first_row 1024
 #define first_col 1024
 #define second_row 1024
@@ -23,17 +23,20 @@ double rand_double() {
 // 计算矩阵对应单元的结果
 double calculateUnit(int row, int col) {
     double result = 0.0;
-    for (int i = 0; i < first_col; ++i) {
-        result += firstMatrix[row][i] * secondMatrix[i][col];
+    int k = 0;
+    #pragma omp parallel for private(k) reduction(+:result)
+    for (k = 0; k < first_col; ++k) {
+        result += firstMatrix[row][k] * secondMatrix[k][col];
     }
     return result;
 }
 
 // 矩阵乘法运算并行
 void matrixMultiOpenMp() {
-    #pragma omp parallel for
-    for (int i = 0; i < first_row; ++i) {
-        for (int j = 0; j < second_col; ++j) {
+    int i, j;
+    #pragma omp parallel for private(i, j)
+    for (i = 0; i < first_row; ++i) {
+        for (j = 0; j < second_col; ++j) {
             resultMatrix[i][j] = calculateUnit(i, j);
         }
     }
