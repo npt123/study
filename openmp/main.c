@@ -24,20 +24,27 @@ double rand_double() {
 double calculateUnit(int row, int col) {
     double result = 0.0;
     int k = 0;
-    #pragma omp parallel for private(k) reduction(+:result)
     for (k = 0; k < first_col; ++k) {
         result += firstMatrix[row][k] * secondMatrix[k][col];
     }
     return result;
 }
 
+double calculateUnitOpenMp(int row, int col) {
+    double result = 0.0;
+    int k;
+#pragma parallel for private(k) reduction(+:result)
+    for (k = 0; k < first_col; ++k) {
+    	result += firstMatrix[row][k] * secondMatrix[k][col];
+    }
+}
+
 // 矩阵乘法运算并行
 void matrixMultiOpenMp() {
     int i, j;
-    #pragma omp parallel for private(i, j)
     for (i = 0; i < first_row; ++i) {
         for (j = 0; j < second_col; ++j) {
-            resultMatrix[i][j] = calculateUnit(i, j);
+            resultMatrix[i][j] = calculateUnitOpenMp(i, j);
         }
     }
 }
